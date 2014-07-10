@@ -6,10 +6,6 @@ key = os.environ.get('TENON_KEY')
 
 @app.route('/')
 def index():
-    return 'App working'
-
-@app.route('/')
-def index():
   if key != None:
     return 'App working, key is set.'
   else:
