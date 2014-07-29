@@ -53,9 +53,6 @@ def requires_auth(f):
 @requires_setup
 @requires_auth
 def index():
-  params = request.args.items()
-  params.append(( 'key', key ))
-  return get_results(tenon_api_url, params)
   response = Response('Request completed ok', 200)
   response.headers.add('Access-Control-Allow-Credentials', 'true')
   response.headers.add('Access-Control-Allow-Origin', origin_env)
