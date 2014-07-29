@@ -8,9 +8,10 @@ tenon_api_url = 'http://beta.tenon.io/api/'
 key = os.environ.get('TENON_KEY')
 username_env = os.environ.get('USERNAME')
 password_env = os.environ.get('PASSWORD')
+origin_env = os.environ.get('ORIGIN')
 
 def keys_set():
-  return (key != None and username_env != None and password_env != None)
+  return (key != None and username_env != None and password_env != None and origin_env)
 
 def app_setup_fail():
   """Responds to environment variables being set up incorrectly"""
@@ -22,7 +23,7 @@ def check_auth(username, password):
   """This function is called to check if a username /
   password combination is valid.
   """
-  return username == username_env and password == password_env
+  return username == username_env and password == password_env and origin_env
 
 def authenticate():
   """Sends a 401 response that enables basic auth"""
@@ -55,6 +56,10 @@ def index():
   params = request.args.items()
   params.append(( 'key', key ))
   return get_results(tenon_api_url, params)
+  response = Response('Request completed ok', 200)
+  response.headers.add('Access-Control-Allow-Credentials', 'true')
+  response.headers.add('Access-Control-Allow-Origin', origin_env)
+  return response
 
 if __name__ == '__main__':
     app.run()
