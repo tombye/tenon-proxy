@@ -18,6 +18,8 @@ def app_setup_fail():
   return Response(
       'Sorry, we are having technical difficulties\n'
       'Please try again in a few minutes', 500)
+  response.headers.add('Access-Control-Allow-Credentials', 'true')
+  response.headers.add('Access-Control-Allow-Origin', origin_env)
 
 def check_auth(username, password):
   """This function is called to check if a username /
@@ -53,7 +55,9 @@ def requires_auth(f):
 @requires_setup
 @requires_auth
 def index():
-  response = Response('Request completed ok', 200)
+  params = request.args.items()
+  params.append(( 'key', key ))
+  response = get_results(tenon_api_url, params)
   response.headers.add('Access-Control-Allow-Credentials', 'true')
   response.headers.add('Access-Control-Allow-Origin', origin_env)
   return response
