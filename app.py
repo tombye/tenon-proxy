@@ -11,7 +11,7 @@ password_env = os.environ.get('PASSWORD')
 origin_env = os.environ.get('ORIGIN')
 
 def keys_set():
-  return (key != None and username_env != None and password_env != None and origin_env)
+  return (key != None and username_env != None and password_env != None and origin_env != None)
 
 def app_setup_fail():
   """Responds to environment variables being set up incorrectly"""
@@ -23,7 +23,7 @@ def check_auth(username, password):
   """This function is called to check if a username /
   password combination is valid.
   """
-  return username == username_env and password == password_env and origin_env
+  return username == username_env and password == password_env
 
 def authenticate():
   """Sends a 401 response that enables basic auth"""
