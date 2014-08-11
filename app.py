@@ -8,10 +8,18 @@ tenon_api_url = 'http://beta.tenon.io/api/'
 key = os.environ.get('TENON_KEY')
 username_env = os.environ.get('USERNAME')
 password_env = os.environ.get('PASSWORD')
-origin_env = os.environ.get('ORIGIN')
+origins_env = os.environ.get('ORIGINS')
+origins = origins_env.split(' ') if origins_env != None else None
+
+def check_origin(origin):
+  try:
+    idx = origins.index(origin)
+    return origins[idx]
+  except ValueError:
+    return false
 
 def keys_set():
-  return (key != None and username_env != None and password_env != None and origin_env != None)
+  return (key != None and username_env != None and password_env != None and origins != None)
 
 def app_setup_fail():
   """Responds to environment variables being set up incorrectly"""
@@ -53,13 +61,15 @@ def requires_auth(f):
 @requires_setup
 @requires_auth
 def index():
+  origin = check_origin(request.headers['Origin'])
   params = request.args.items()
   params.append(( 'key', key ))
   results = get_results(tenon_api_url, params)
   response = Response(results, 200,
   {'Content-Type': 'application/json; charset=utf-8'})
-  response.headers.add('Access-Control-Allow-Credentials', 'true')
-  response.headers.add('Access-Control-Allow-Origin', origin_env)
+  if origin:
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    response.headers.add('Access-Control-Allow-Origin', origin)
   return response
 
 if __name__ == '__main__':
